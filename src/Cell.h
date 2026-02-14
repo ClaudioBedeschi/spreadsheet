@@ -12,9 +12,9 @@ class Cell : public Observer, public Subject {
 public:
 	explicit Cell(const double v=0) : value {v} {};
 
-	void computeAndNotify();
+	void computeAndNotify(Subject* cyclePtr = nullptr);
 
-	void update(Subject* subject) override;
+	void update(Subject* cyclePtr) override;
 
 	void attach() override {
 		for(const auto subject : subjects)
@@ -32,9 +32,9 @@ public:
 		observers.remove(observer);
 	}
 
-	void notify() override {
+	void notify(Subject* cyclePtr) const override {
 		for(const auto observer : observers)
-			observer->update(this);
+			observer->update(cyclePtr);
 	}
 
 	void setFunction(const std::string& mathFunction);
@@ -49,7 +49,9 @@ public:
 		return value;
 	}
 
-	void setValue(double newValue);
+	void setRawValueFromUser(double newValue);
+
+	void setMathComputedValue(const double updatedValue);
 
 	~Cell() override = default;
 private:

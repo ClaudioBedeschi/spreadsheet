@@ -25,9 +25,9 @@ bool Spreadsheet::isValidCell(const int r, const int c) const {
 		return true;
 }
 
-void Spreadsheet::setCellValue(const int r, const int c, const double v) const {
+void Spreadsheet::setCellValueFromUser(const int r, const int c, const double v) const {
 	if(isValidCell(r,c))
-		sheet[r][c]->setValue(v);
+		sheet[r][c]->setRawValueFromUser(v);
 }
 
 void Spreadsheet::setCellFunction(const int r, const int c, const std::string& functionName) const {
@@ -40,9 +40,21 @@ double Spreadsheet::getCellValue(const int r, const int c) {
 		return sheet[r][c]->getValue();
 }
 
-void Spreadsheet::setCellDependencies(const int resultR, const int resultC, const int startR, const int startC, const int endR, const int endC) const
+void Spreadsheet::setCellDependencies(const int resultR, const int resultC, int startR, int endR, int startC, int endC) const
 {
-	if(isValidCell(resultR,resultC) && isValidCell(startR,startC) && isValidCell(endR,endC) && startR<endR && startC<endC) {
+	if(isValidCell(resultR,resultC) && isValidCell(startR,startC) && isValidCell(endR,endC)) {
+		int tmp;	// Making sure we can iterate
+		if(startR>endR) {
+			tmp = startR;
+			startR = endR;
+			endR = tmp;
+		}
+		if(startC>endC) {
+			tmp = startC;
+			startC = endC;
+			endC = tmp;
+		}
+
 		std::list<Cell*> dependencies;
 		for(int row=startR; row<=endR; row++) {
 			for(int col=startC; col<=endC; col++)

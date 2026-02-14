@@ -9,32 +9,30 @@
 class Spreadsheet {
 public:
 	Spreadsheet(int r, int c);
-	
-	void setSizeR(int r) {
+	/* Resizing would not make sense
+	void setSizeR(const int r) {
 		sizeR = r;
-	}
-
+	} */
 	int getSizeR() const {
 		return sizeR;
 	}
-
-	void setSizeC(int c) {
+	/* Resizing would not make sense
+	void setSizeC(const int c) {
 		sizeC = c;
-	}
-
+	} */
 	int getSizeC() const {
 		return sizeC;
 	}
 
 	bool isValidCell(int r, int c) const;
 
-	void setCellValue(int r, int c, double v) const;
+	void setCellValueFromUser(int r, int c, double v) const;
 
 	void setCellFunction(int r, int c, const std::string& functionName) const;
 
 	double getCellValue(int r, int c);
 
-	void setCellDependencies(int resultR, int resultC, int startR, int startC, int endR, int endC) const;
+	void setCellDependencies(int resultR, int resultC, int startR, int endR, int startC, int endC) const;
 
 	~Spreadsheet() = default;
 private:

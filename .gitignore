@@ -2,8 +2,10 @@
 
 !/src/
 !/tests/
+!/images/*
 
 !*.cpp
 !*.h
 !CMakeLists.txt
+!README.md
 !.gitignore

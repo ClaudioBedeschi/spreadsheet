@@ -6,10 +6,10 @@
 #include "Sum.h"
 
 std::shared_ptr<Function> FunctionFactory::assignFunction(const std::string& functionType) {
-	if (functionType == "Sum")  return sumFunction;
-	if (functionType == "Min")  return minFunction;
-	if (functionType == "Max")  return maxFunction;
-	if (functionType == "Mean") return meanFunction;
+	if (functionType == "sum")  return sumFunction;
+	if (functionType == "min")  return minFunction;
+	if (functionType == "max")  return maxFunction;
+	if (functionType == "mean") return meanFunction;
 	return nullptr;
 }
 

@@ -6,16 +6,17 @@
 
 #include "FunctionFactory.h"
 
-void Cell::computeAndNotify() {
+void Cell::computeAndNotify(Subject* cyclePtr) {
 	if(function) {
 		function->calculate(*this);
 
-		notify();
+		notify(cyclePtr);
 	}
 }
 
-void Cell::update(Subject* subject) {
-	computeAndNotify();
+void Cell::update(Subject* cyclePtr) {
+	if(cyclePtr != this)
+		computeAndNotify(cyclePtr);
 }
 void Cell::setFunction(const std::string& mathFunction) {
 	function = FunctionFactory::assignFunction(mathFunction);
@@ -23,7 +24,8 @@ void Cell::setFunction(const std::string& mathFunction) {
 }
 
 void Cell::setDependencies(const std::list<Cell*>& newSubjects) {
-	bool notThis = true;	// avoids being a subject of itself
+	// avoids recursion by preventing being a subject of itself
+	bool notThis = true;
 	for(const auto subject : newSubjects) {
 		if(subject == this) {
 			notThis = false;
@@ -33,17 +35,26 @@ void Cell::setDependencies(const std::list<Cell*>& newSubjects) {
 
 	if(notThis) {
 		detach();
-		this->subjects = newSubjects;
+		subjects = newSubjects;
 		attach();
 
-		computeAndNotify();
+		// to prevent dependency cycles bigger than trivial recursion,
+		// "this" is passed down the observers' path
+		computeAndNotify(this);
 	}
 }
 
-void Cell::setValue(const double newValue) {
-	this->value = newValue;
-	notify();
+// WARNING: this setter removes cell's dependencies and function, use only for setting pure values
+void Cell::setRawValueFromUser(const double newValue) {
+	value = newValue;
+	notify(nullptr);
 
 	detach();
 	subjects.clear();
+	function.reset();
+}
+
+// Use this setter when storing computation results
+void Cell::setMathComputedValue(const double updatedValue) {
+	value = updatedValue;
 }

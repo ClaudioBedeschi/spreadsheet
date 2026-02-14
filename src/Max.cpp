@@ -6,8 +6,12 @@
 
 void Max::calculate(Cell& cell) {
 	auto dependencies = cell.getDependencies();
-	if(!dependencies.empty())
-		cell.setValue((*(std::max_element(dependencies.begin(),dependencies.end(),[](const Cell* a, const Cell* b) {
-			return a->getValue() < b->getValue();
-		})))->getValue());
+	if(!dependencies.empty()) {
+		double max = dependencies.front()->getValue();
+		for(const auto dep : dependencies)
+			if(max < dep->getValue())
+				max = dep->getValue();
+
+		cell.setMathComputedValue(max);
+	}
 }
