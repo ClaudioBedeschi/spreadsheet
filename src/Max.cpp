@@ -1,5 +1,3 @@
-#include <algorithm>
-
 #include "Max.h"
 
 #include "Cell.h"

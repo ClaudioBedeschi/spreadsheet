@@ -94,7 +94,7 @@ void SpreadsheetWindow::handleCellChanges() {
 				refreshTable();
 			}
 			else {
-				QSignalBlocker blocker(table);	//Prevent recursive triggers
+				QSignalBlocker blocker(table);	// Prevent recursive triggers
 				item->setText("Err: Value\nCould not apply changes");
 			}
 		}

@@ -1,5 +1,3 @@
-#include <numeric>
-
 #include "Sum.h"
 
 #include "Cell.h"

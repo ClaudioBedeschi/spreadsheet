@@ -1,5 +1,3 @@
-#include <algorithm>
-
 #include "Min.h"
 
 #include "Cell.h"

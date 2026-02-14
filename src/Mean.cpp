@@ -1,5 +1,3 @@
-#include <numeric>
-
 #include "Mean.h"
 
 #include "Cell.h"

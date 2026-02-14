@@ -9,17 +9,13 @@
 class Spreadsheet {
 public:
 	Spreadsheet(int r, int c);
-	/* Resizing would not make sense
-	void setSizeR(const int r) {
-		sizeR = r;
-	} */
+
+	// Resizing does not make sense for now
+
 	int getSizeR() const {
 		return sizeR;
 	}
-	/* Resizing would not make sense
-	void setSizeC(const int c) {
-		sizeC = c;
-	} */
+
 	int getSizeC() const {
 		return sizeC;
 	}

@@ -51,7 +51,7 @@ public:
 
 	void setRawValueFromUser(double newValue);
 
-	void setMathComputedValue(const double updatedValue);
+	void setMathComputedValue(double updatedValue);
 
 	~Cell() override = default;
 private:
