@@ -78,20 +78,26 @@ void SpreadsheetWindow::handleCellChanges() {
 			if(parsedExpr.valid) {
 				sheet.setCellDependencies(thisR, thisC, parsedExpr.startR, parsedExpr.endR, parsedExpr.startC, parsedExpr.endC);
 				sheet.setCellFunction(thisR,thisC,parsedExpr.function.toStdString());
+				refreshTable();
 			}
-			else
-				item->setText("Err: NoExpr");
+			else {
+				QSignalBlocker blocker(table);	// Prevent recursive triggers
+				item->setText("Err: NoExpr\nCould not apply changes");
+			}
 		}
-		else {
+		else
+		{
 			bool ok;
 			const double value = text.toDouble(&ok);
-			if(ok)
+			if(ok) {
 				sheet.setCellValueFromUser(thisR, thisC, value);
-			else
-				item->setText("Err: Value");
+				refreshTable();
+			}
+			else {
+				QSignalBlocker blocker(table);	//Prevent recursive triggers
+				item->setText("Err: Value\nCould not apply changes");
+			}
 		}
-
-		refreshTable();
 	});
 }
 
