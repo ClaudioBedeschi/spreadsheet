@@ -10,7 +10,7 @@ class Spreadsheet {
 public:
 	Spreadsheet(int r, int c);
 
-	// Resizing does not make sense for now
+	// Resize does not make sense for now
 
 	int getSizeR() const {
 		return sizeR;

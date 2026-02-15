@@ -15,6 +15,7 @@ public:
 		int startR {}, endR {}, startC {}, endC {};
 		bool valid = false;
 	};
+	static ParsedExpr parseExpr(const QString& text);
 private:
 
 	void setupWindow();
@@ -24,7 +25,6 @@ private:
 
 	void refreshTable();
 	void handleCellChanges();
-	static ParsedExpr parseExpr(const QString& text);
 
 
 	int rows, cols;

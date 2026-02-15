@@ -2,14 +2,16 @@ cmake_minimum_required(VERSION 3.16)
 
 project(spreadsheet)
 
+enable_testing()
+
 set(CMAKE_CXX_STANDARD 11)
 
 include_directories(src)
+add_subdirectory(tests)
 
 find_package(Qt6 REQUIRED COMPONENTS Widgets)
 
 set(SOURCE_FILES
-	src/main.cpp
 	src/Cell.cpp
 	src/Cell.h
 	src/FunctionFactory.cpp
@@ -31,6 +33,8 @@ set(SOURCE_FILES
 	src/Sum.h
 )
 
-add_executable(spreadsheet ${SOURCE_FILES})
+add_executable(spreadsheet src/main.cpp)
+add_library(core ${SOURCE_FILES})
 
-target_link_libraries(spreadsheet Qt6::Widgets)
+target_link_libraries(core Qt6::Widgets)
+target_link_libraries(spreadsheet core)

@@ -17,6 +17,8 @@ void Cell::computeAndNotify() {
 
 void Cell::update(Subject* cyclePtr)
 {
+	if(!function)
+		throw std::logic_error("No function assigned");
 	if(cyclePtr != this) {
 		if(!cyclePtr)
 			cyclePtr = this;

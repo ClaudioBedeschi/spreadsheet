@@ -2,11 +2,13 @@
 
 !/src/
 !/tests/
+!/tests/lib/
 !/images/
 
 !*.cpp
 !*.h
 !CMakeLists.txt
 !README.md
-!/images/*
+!/tests/lib/**
+!/images/**
 !.gitignore

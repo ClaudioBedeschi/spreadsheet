@@ -2,7 +2,7 @@
 
 #include "Spreadsheet.h"
 
-/* Using rows and columns instead of ys and xs because
+/* Use rows and columns instead of ys and xs because
  * - avoids confusion between the two
  * - they go in the order one expects,
  *   both in accessing elements of containers and in cycles
@@ -12,7 +12,7 @@
  * or you could have a vector of vertical vectors, which is not how you read.
  */
 
-Spreadsheet::Spreadsheet(const int r, const int c) : sizeR {r}, sizeC {c} {	// Creates an empty spreadsheet
+Spreadsheet::Spreadsheet(const int r, const int c) : sizeR {r}, sizeC {c} {	// Create an empty spreadsheet
 	std::vector<std::unique_ptr<Cell>> tmpRow;
 	for(int row=0; row<sizeR; row++) {
 		for(int col=0; col<sizeC; col++)
@@ -23,7 +23,7 @@ Spreadsheet::Spreadsheet(const int r, const int c) : sizeR {r}, sizeC {c} {	// C
 }
 
 bool Spreadsheet::isValidCell(const int r, const int c) const {
-	if(0<=r && r<sizeR && 0<=c && c<=sizeC)
+	if(0<=r && r<sizeR && 0<=c && c<sizeC)
 		return true;
 
 	return false;
@@ -60,7 +60,7 @@ double Spreadsheet::getCellValue(const int r, const int c) const {
 void Spreadsheet::setCellDependencies(const int resultR, const int resultC, int startR, int endR, int startC, int endC) const
 {
 	if(isValidCell(resultR,resultC) && isValidCell(startR,startC) && isValidCell(endR,endC)) {
-		int tmp;	// Making sure we can iterate
+		int tmp;	// Make sure we can iterate
 		if(startR>endR) {
 			tmp = startR;
 			startR = endR;
