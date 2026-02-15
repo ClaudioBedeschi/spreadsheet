@@ -1,3 +1,5 @@
+#include <stdexcept>
+
 #include "Sum.h"
 
 #include "Cell.h"
@@ -11,4 +13,6 @@ void Sum::calculate(Cell& cell) {
 
 		cell.setMathComputedValue(sum);
 	}
+	else
+		throw std::logic_error("Trying to compute on empty set of values");
 }

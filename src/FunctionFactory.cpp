@@ -1,16 +1,18 @@
 #include "FunctionFactory.h"
 
+#include <stdexcept>
+
 #include "Max.h"
 #include "Mean.h"
 #include "Min.h"
 #include "Sum.h"
 
-std::shared_ptr<Function> FunctionFactory::assignFunction(const std::string& functionType) {
-	if (functionType == "sum")  return sumFunction;
-	if (functionType == "min")  return minFunction;
-	if (functionType == "max")  return maxFunction;
-	if (functionType == "mean") return meanFunction;
-	return nullptr;
+std::shared_ptr<Function> FunctionFactory::assignFunction(const std::string& type) {
+	if (type == "sum")  return sumFunction;
+	if (type == "min")  return minFunction;
+	if (type == "max")  return maxFunction;
+	if (type == "mean") return meanFunction;
+	throw std::runtime_error("Err: Unknown function type");
 }
 
 std::shared_ptr<Function> FunctionFactory::sumFunction = std::make_shared<Sum>();

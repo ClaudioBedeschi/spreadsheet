@@ -26,7 +26,9 @@ public:
 
 	void setCellFunction(int r, int c, const std::string& functionName) const;
 
-	double getCellValue(int r, int c);
+	void makeCellComputation(int r, int c) const;
+
+	double getCellValue(int r, int c) const;
 
 	void setCellDependencies(int resultR, int resultC, int startR, int endR, int startC, int endC) const;
 

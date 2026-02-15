@@ -1,3 +1,5 @@
+#include <stdexcept>
+
 #include "Max.h"
 
 #include "Cell.h"
@@ -11,5 +13,6 @@ void Max::calculate(Cell& cell) {
 				max = dep->getValue();
 
 		cell.setMathComputedValue(max);
-	}
+	} else
+		throw std::logic_error("Trying to compute on empty set of values");
 }

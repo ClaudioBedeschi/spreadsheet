@@ -12,7 +12,7 @@ class Cell : public Observer, public Subject {
 public:
 	explicit Cell(const double v=0) : value {v} {};
 
-	void computeAndNotify(Subject* cyclePtr = nullptr);
+	void computeAndNotify();
 
 	void update(Subject* cyclePtr) override;
 

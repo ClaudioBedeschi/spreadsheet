@@ -1,3 +1,5 @@
+#include <stdexcept>
+
 #include "Spreadsheet.h"
 
 /* Using rows and columns instead of ys and xs because
@@ -23,21 +25,36 @@ Spreadsheet::Spreadsheet(const int r, const int c) : sizeR {r}, sizeC {c} {	// C
 bool Spreadsheet::isValidCell(const int r, const int c) const {
 	if(0<=r && r<sizeR && 0<=c && c<=sizeC)
 		return true;
+
+	return false;
 }
 
 void Spreadsheet::setCellValueFromUser(const int r, const int c, const double v) const {
 	if(isValidCell(r,c))
 		sheet[r][c]->setRawValueFromUser(v);
+	else
+		throw std::runtime_error("Err: trying to go out of spreadsheet range");
 }
 
 void Spreadsheet::setCellFunction(const int r, const int c, const std::string& functionName) const {
 	if(isValidCell(r,c))
 		sheet[r][c]->setFunction(functionName);
+	else
+		throw std::runtime_error("Err: trying to go out of spreadsheet range");
 }
 
-double Spreadsheet::getCellValue(const int r, const int c) {
+void Spreadsheet::makeCellComputation(const int r, const int c) const {
+	if(isValidCell(r,c))
+		sheet[r][c]->computeAndNotify();
+	else
+		throw std::runtime_error("Err: trying to go out of spreadsheet range");
+}
+
+double Spreadsheet::getCellValue(const int r, const int c) const {
 	if(isValidCell(r,c))
 		return sheet[r][c]->getValue();
+
+	throw std::logic_error("Getting out of spreadsheet range");
 }
 
 void Spreadsheet::setCellDependencies(const int resultR, const int resultC, int startR, int endR, int startC, int endC) const
@@ -62,4 +79,6 @@ void Spreadsheet::setCellDependencies(const int resultR, const int resultC, int 
 		}
 		sheet[resultR][resultC]->setDependencies(dependencies);
 	}
+	else
+		throw std::runtime_error("Err: trying to go out of spreadsheet range");
 }

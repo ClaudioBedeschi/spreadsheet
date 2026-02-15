@@ -1,3 +1,5 @@
+#include <stdexcept>
+
 #include "Min.h"
 
 #include "Cell.h"
@@ -11,5 +13,6 @@ void Min::calculate(Cell& cell) {
 				min = dep->getValue();
 
 		cell.setMathComputedValue(min);
-	}
+	} else
+		throw std::logic_error("Trying to compute on empty set of values");
 }

@@ -1,29 +1,38 @@
-#include "Cell.h"
-
 #include <list>
+#include <stdexcept>
 #include <string>
 
+#include "Cell.h"
 
 #include "FunctionFactory.h"
 
-void Cell::computeAndNotify(Subject* cyclePtr) {
+void Cell::computeAndNotify() {
 	if(function) {
 		function->calculate(*this);
-
-		notify(cyclePtr);
+		notify(this);
 	}
+	else
+		throw std::logic_error("No function assigned");
 }
 
-void Cell::update(Subject* cyclePtr) {
-	if(cyclePtr != this)
-		computeAndNotify(cyclePtr);
+void Cell::update(Subject* cyclePtr)
+{
+	if(cyclePtr != this) {
+		if(!cyclePtr)
+			cyclePtr = this;
+
+		function->calculate(*this);
+		notify(cyclePtr);
+	}
+	else
+		throw std::runtime_error("Err: Cycle detected");
 }
 void Cell::setFunction(const std::string& mathFunction) {
 	function = FunctionFactory::assignFunction(mathFunction);
-	computeAndNotify();
 }
 
-void Cell::setDependencies(const std::list<Cell*>& newSubjects) {
+void Cell::setDependencies(const std::list<Cell*>& newSubjects)
+{
 	// avoids recursion by preventing being a subject of itself
 	bool notThis = true;
 	for(const auto subject : newSubjects) {
@@ -37,21 +46,19 @@ void Cell::setDependencies(const std::list<Cell*>& newSubjects) {
 		detach();
 		subjects = newSubjects;
 		attach();
-
-		// to prevent dependency cycles bigger than trivial recursion,
-		// "this" is passed down the observers' path
-		computeAndNotify(this);
-	}
+	} else
+		throw std::runtime_error("Err: Cycle detected");
 }
 
 // WARNING: this setter removes cell's dependencies and function, use only for setting pure values
 void Cell::setRawValueFromUser(const double newValue) {
 	value = newValue;
-	notify(nullptr);
 
 	detach();
 	subjects.clear();
 	function.reset();
+
+	notify(nullptr);
 }
 
 // Use this setter when storing computation results

@@ -1,3 +1,5 @@
+#include <stdexcept>
+
 #include "Mean.h"
 
 #include "Cell.h"
@@ -10,5 +12,6 @@ void Mean::calculate(Cell& cell) {
 			sum += dep->getValue();
 
 		cell.setMathComputedValue(sum / static_cast<double>(dependencies.size()));
-	}
+	} else
+		throw std::logic_error("Trying to compute on empty set of values");
 }

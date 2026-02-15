@@ -1,6 +1,7 @@
 #include <QHeaderView>
 #include <QLineEdit>
 #include <QLabel>
+#include <iostream>
 
 #include "SpreadsheetWindow.h"
 
@@ -47,22 +48,27 @@ void SpreadsheetWindow::setupTable() {
 	table->setEditTriggers(QAbstractItemView::DoubleClicked | QAbstractItemView::AnyKeyPressed);
 }
 
-void SpreadsheetWindow::refreshTable() {
-	for(int r=0; r<rows; r++) {
-		for(int c=0; c<cols; c++) {
-			const double val = sheet.getCellValue(r,c);
-			QString text = (val==0) ? "" : QString::number(val);	// Cells are empty when 0
+void SpreadsheetWindow::refreshTable()
+{
+	try {
+		for(int r=0; r<rows; r++) {
+			for(int c=0; c<cols; c++) {
+				const double val = sheet.getCellValue(r,c);
+				QString text = (val==0) ? "" : QString::number(val);	// Cells are empty when 0
 
-			item = table->item(r,c);
-			if(!item) {	// Table contains no items at startup
-				item = new QTableWidgetItem;
-				table->setItem(r,c,item);
+				item = table->item(r,c);
+				if(!item) {	// Table contains no items at startup
+					item = new QTableWidgetItem;
+					table->setItem(r,c,item);
+				}
+
+				table->blockSignals(true);	// Avoid triggering signal loops
+				item->setText(text);
+				table->blockSignals(false);
 			}
-
-			table->blockSignals(true);	// Avoid triggering signal loops
-			item->setText(text);
-			table->blockSignals(false);
 		}
+	} catch(std::logic_error& e) {
+		std::cerr << e.what();
 	}
 }
 
@@ -75,10 +81,19 @@ void SpreadsheetWindow::handleCellChanges() {
 
 		if(text.startsWith("=")) {
 			const ParsedExpr parsedExpr = parseExpr(text);
-			if(parsedExpr.valid) {
-				sheet.setCellDependencies(thisR, thisC, parsedExpr.startR, parsedExpr.endR, parsedExpr.startC, parsedExpr.endC);
-				sheet.setCellFunction(thisR,thisC,parsedExpr.function.toStdString());
-				refreshTable();
+			if(parsedExpr.valid)
+			{
+				try {
+					sheet.setCellDependencies(thisR, thisC, parsedExpr.startR, parsedExpr.endR, parsedExpr.startC, parsedExpr.endC);
+					sheet.setCellFunction(thisR, thisC,parsedExpr.function.toStdString());
+					sheet.makeCellComputation(thisR, thisC);
+					refreshTable();
+				} catch(std::logic_error& e) {
+					std::cerr << e.what();
+				} catch(std::runtime_error& e) {
+					QSignalBlocker blocker(table);	// Prevent recursive triggers
+					item->setText(QString::fromStdString(e.what()) + "\nCould not apply changes");
+				}
 			}
 			else {
 				QSignalBlocker blocker(table);	// Prevent recursive triggers
@@ -89,9 +104,15 @@ void SpreadsheetWindow::handleCellChanges() {
 		{
 			bool ok;
 			const double value = text.toDouble(&ok);
-			if(ok) {
-				sheet.setCellValueFromUser(thisR, thisC, value);
-				refreshTable();
+			if(ok)
+			{
+				try {
+					sheet.setCellValueFromUser(thisR, thisC, value);
+					refreshTable();
+				} catch(std::runtime_error& e) {
+					QSignalBlocker blocker(table);	// Prevent recursive triggers
+					item->setText(QString::fromStdString(e.what()) + "\nCould not apply changes");
+				}
 			}
 			else {
 				QSignalBlocker blocker(table);	// Prevent recursive triggers
